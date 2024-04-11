@@ -28,6 +28,53 @@ public class ClienteGastos {
                 }
             }
 
+            boolean primeraVez = true;
+
+            while (true) {
+                if (primeraVez) {
+                    System.out.println("\u001B[34mBIENVENIDO " + nombre + "!\nQUE DESEA HACER HOY\n--------------------------------------------------------------------------------------------------");
+                    mostrarMenu();
+                    primeraVez = false;
+                } else {
+                    System.out.println("\u001B[34m¿Qué otra cosa desea hacer?\n--------------------------------------------------------------------------------------------------");
+                    mostrarMenu();
+                }
+
+                System.out.print("Elija una opción: ");
+                String opcion = scanner.nextLine().trim();
+
+                switch (opcion) {
+                    case "1":
+                        agregarGasto(scanner, srv, nombreFichero, nombre);
+                        break;
+                    case "2":
+                        verGastos(scanner, srv, nombre);
+                        break;
+                    case "3":
+                        System.out.println("\u001B[34m¡Hasta luego!\u001B[0m");
+                        return;
+                    default:
+                        System.err.println("\u001B[31mOpción no válida. Por favor, seleccione 1, 2 o 3.\u001B[0m");
+                        break;
+                }
+            }
+
+        } catch (Exception e) {
+            System.err.println("Excepción en ClienteGastos:");
+            e.printStackTrace();
+        }
+    }
+
+    static private void mostrarMenu() {
+        System.out.println("[1]-->Añadir un nuevo gasto");
+        System.out.println("[2]-->Ver todos mis gastos");
+        System.out.println("[3]-->Salir");
+        System.out.println("--------------------------------------------------------------------------------------------------");
+    }
+
+    static private void agregarGasto(Scanner scanner, FabricaGastos srv, String nombreFichero, String nombre) {
+        try {
+            clearScreen();
             // Pedir al usuario el gasto que ha tenido
             String precio = "";
             while (!precio.matches("\\d+")) {
@@ -49,11 +96,41 @@ public class ClienteGastos {
             }
 
             // Llamar al método registrarGasto con los datos del usuario
-            srv.registrarGasto(nombreFichero, nombre, concepto, precio);
-            
+            ServicioGastos servicioGastos = srv.obtenerServicioGastos();
+            servicioGastos.registrarGasto(new Gastos(nombreFichero, nombre, concepto, precio));
+
         } catch (Exception e) {
-            System.err.println("Excepción en ClienteGastos:");
+            System.err.println("Excepción al agregar gasto:");
             e.printStackTrace();
         }
     }
+static private void verGastos(Scanner scanner, FabricaGastos srv, String nombre) {
+    try {
+        clearScreen();
+        // Llamar al método para obtener todos los gastos
+        ServicioGastos servicioGastos = srv.obtenerServicioGastos();
+        List<Gastos> gastos = servicioGastos.obtenerGastosPorNombre(nombre);
+        
+        // Mostrar los gastos obtenidos en otro color
+        System.out.println("\u001B[36mTodos tus gastos:\u001B[0m");
+        for (Gastos gasto : gastos) {
+            System.out.println(gasto);
+        }
+
+        // Obtener la suma total de los gastos de la persona
+        double sumaTotalGastos = servicioGastos.obtenerSumaTotalGastosPorNombre(nombre);
+        // Mostrar la suma total de los gastos
+        System.out.println("\nLa suma total de tus gastos es: $" + sumaTotalGastos);
+
+    } catch (Exception e) {
+        System.err.println("Excepción al ver gastos:");
+        e.printStackTrace();
+    }
+}
+
+
+static private void clearScreen() {  
+    System.out.print("\033[H\033[2J");  
+    System.out.flush();  
+}
 }
