@@ -1,0 +1,35 @@
+Log.java es como titular.java-- Me crea el tipo log
+
+FabricaLog es como banco.java-- Me crea los logs y eso
+
+ServicioLog es como Cuenta.java--LLama a los métodos
+
+
+Nos falta:
+
+En el servidor:
+
+ServicioLogImpl.java=CuentaImpl.java
+ServidorLog.java
+FabricaLogImpl=BancoImpl.java
+
+En el cliente:
+ClienteLog.java
+
+
+
+
+La funcionalidad principal de la aplicación incluye:
+1.Crear logs con un nombre y un ID proporcionados por el usuario.
+2.Escribir mensajes en los logs creados.
+3.Consultar todos los mensajes escritos en los logs.
+4.Obtener información sobre los usuarios y los ficheros asociados a cada usuario.
+
+La ejecución del programa se realiza desde la línea de comandos. Se pueden realizar dos tipos de ejecuciones:
+
+rmiregistry 54321 &
+
+java -Djava.security.policy=servidor.permisos -Djava.net.preferIPv4Stack=true -Djava.rmi.server.hostname=localhost ServidorGastos 54321
+
+
+java -Djava.security.policy=cliente.permisos -Djava.net.preferIPv4Stack=true ClienteGastos localhost 54321 NombreDelFichero.txt "Rafa" "Compra chino" "20"
